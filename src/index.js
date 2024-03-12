@@ -4,7 +4,7 @@ import './styles.css';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
 import Notiflix from 'notiflix';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+//import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 // ---------- DECLARATIONS
 const breedSelectEl = document.querySelector('.breed-select');
@@ -18,19 +18,24 @@ loaderEl.style.display = 'none';
 errorEl.style.display = 'none';
 
 // ---------- FUNCTIONS
-let breedId = '';
 
 function chooseBreed() {
-  loaderEl.style.display = 'block';
+  let arrBreedsId = [];
+  breedSelectEl.style.display = 'flex';
   fetchBreeds()
     .then(data => {
-      //console.log(data);
-      let optionsMarkup = data.map(({ name, id }) => {
-        return `<option value=${id}>${name}</option>`;
+      data.forEach(element => {
+        arrBreedsId.push({ text: element.name, value: element.id });
       });
-      breedSelectEl.insertAdjacentHTML('beforeend', optionsMarkup);
-      loaderEl.style.display = 'none';
-      breedSelectEl.style.display = 'block';
+      console.log(arrBreedsId);
+      new SlimSelect({
+        select: breedSelectEl,
+        data: arrBreedsId,
+        settings: {
+          contentPosition: 'absolute', // 'absolute' or 'relative'
+          openPosition: 'down', // 'auto', 'up' or 'down'
+        },
+      });
     })
     .catch(onError);
 }
@@ -72,22 +77,18 @@ function onError(error) {
   );
 }
 
+// let breedId = '';
 // function chooseBreed() {
-//   let arrBreedsId = [];
-//   breedSelectEl.style.display = 'block';
+//   loaderEl.style.display = 'block';
 //   fetchBreeds()
 //     .then(data => {
-//       data.forEach(element => {
-//         arrBreedsId.push({ text: element.name, value: element.id });
+//       //console.log(data);
+//       let optionsMarkup = data.map(({ name, id }) => {
+//         return `<option value=${id}>${name}</option>`;
 //       });
-//       console.log(arrBreedsId);
-//       new SlimSelect({
-//         select: breedSelectEl,
-//         data: arrBreedsId,
-//         placeholder: 'Search',
-//         showSearch: false, // shows search field
-//         searchText: 'Sorry couldnt find anything',
-//       });
+//       breedSelectEl.insertAdjacentHTML('beforeend', optionsMarkup);
+//       loaderEl.style.display = 'none';
+//       breedSelectEl.style.display = 'block';
 //     })
 //     .catch(onError);
 // }
